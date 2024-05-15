@@ -1,71 +1,152 @@
 ---
-title: Introduction
-description: 'Welcome to the home of your new documentation'
+title: Introducción a la Arquitectura de Ecosistemas
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+# Introducción a la Arquitectura de Ecosistemas
 
-## Setting up
+El objetivo de este sistema es escuchar eventos a través de webhooks, enviar un mensaje o evento a un Agente AI (potenciado por GPT-4o) y completar un proceso de negocio definido. Cada agente se asocia con un proceso específico.
 
-The first step to world-class documentation is setting up your editing environments.
+## Componentes del Agente
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+1. **Código Python**:
+   - Contiene la lógica y acciones específicas del agente.
+   - Se integra con el resto del framework.
 
-## Make it yours
+2. **Prompt del Proceso de Negocio**:
+   - Define los pasos y reglas del proceso de negocio.
 
-Update your docs to your brand and add valuable content for the best user conversion.
+3. **Prompt del Contexto**:
+   - Incluye una explicación semántica que hace referencia al contexto en el que opera el agente.
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/customers"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+## Funcionamiento
+
+1. Los eventos se reciben mediante webhooks.
+2. Estos eventos se convierten en mensajes que se envían al Agente AI.
+3. El Agente AI evalúa y toma decisiones basada en el contexto y el proceso de negocio definido.
+4. El proceso se completa ejecutando las acciones necesarias o enviando mensajes apropiados a los usuarios.
+
+Esta arquitectura forma la base del proyecto de Ecosistemas, proporcionando una potente herramienta para gestionar y automatizar procesos de negocio mediante la inteligencia artificial.
+
+Explora más en las próximas secciones para comprender cómo puedes utilizar y potenciar esta arquitectura en tu organización.
+```
+
+**Quick Start**
+
+```markdown
+---
+title: Quick Start
+---
+
+# Quick Start
+
+## Paso 1: Entender el Agente
+
+Cada agente se compone de tres partes principales:
+- **Código Python**: Define las acciones e integra con el framework.
+- **Prompt del Proceso de Negocio**: Define el flujo y reglas del proceso.
+- **Prompt del Contexto**: Explica el contexto de operación del agente.
+
+## Paso 2: Configuración Inicial
+
+Configura tus webhooks para escuchar eventos relevantes e integrarlos en el sistema.
+
+### Ejemplo de Configuración de Webhook
+
+```python
+class MyWebhookHandler:
+    async def handle_event(self, event):
+        context = await setup(
+            process_key="mi_agente",
+            context_idempotency_key=event.get("id"),
+            sources={"evento": event}
+        )
+        await react(event)
+```
+
+## Paso 3: Definir Acciones y Prompts
+
+### Definir Código de Acciones
+
+```python
+class MiAgente:
+    async def execute(self, action, context):
+        if action["name"] == "mi_acción":
+            # Define la lógica de la acción
+            pass
+
+    async def process_prompt(self):
+        return "Define tus pasos y reglas del proceso de negocio aquí."
+
+    async def context_prompt(self):
+        return "Incluye la explicación semántica del contexto aquí."
+```
+
+### Definir Prompts del Proceso y Contexto
+
+```markdown
+# prompts/mi_agente_process.md
+Define aquí los pasos y reglas del proceso de negocio de tu agente.
+```
+
+```markdown
+# prompts/mi_agente_context.md
+Incluye aquí la explicación semántica del contexto en el que opera tu agente.
+```
+
+## Paso 4: Ejecución del Proceso
+
+El sistema recibirá eventos, enviará mensajes al Agente AI, y completará los procesos definidos.
+
+### Ejecución del Agente
+
+```python
+# Evento recibido vía webhook
+event = {
+    "id": "12345",
+    "type": "invoice_created",
+    "data": {...}
+}
+
+# Configuración del contexto
+context = await setup(
+    process_key="mi_agente",
+    context_idempotency_key=event.get("id"),
+    sources={"evento": event}
+)
+
+# Reaccionar al evento
+await react(event)
+```
+
+## Paso 5: Evaluación y Enganche del Agente
+
+### Evaluar el Contexto
+
+```python
+evaluation = await evaluate(context, event, mi_agente)
+```
+
+### Enganchar al Agente en un Proceso
+
+```python
+await engage(context, event, mi_agente)
+```
+
+## Paso 6: Gestión del Contexto y Conversaciones
+
+### Gestión del Contexto
+
+```python
+await ContextService.get_instance().create_context(context_data)
+await ContextService.get_instance().update_context(context_id, new_context_data)
+```
+
+### Gestión de Conversaciones
+
+```python
+await ConversationService.get_instance().create_conversation(idempotency_key, channel, context_uid)
+await ConversationService.get_instance().save_user_message(message_body, author_uid, conversation_uid, context_uid)
+await ConversationService.get_instance().save_assistant_message(message_body, conversation_uid, context_uid)
+```
+
+Esta guía rápida proporciona una visión general de cómo puedes configurar e interactuar con los agentes AI en nuestra arquitectura de Ecosistemas. Para profundizar en cada sección, consulta la documentación completa.

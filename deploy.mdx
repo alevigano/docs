@@ -1,0 +1,135 @@
+---
+title: Deploy
+---
+
+# Deploy
+
+Esta guía te llevará a través de los pasos necesarios para desplegar el sistema de Ecosistemas en Azure. Cubriremos la creación de una Web App, una base de datos Cosmos DB (MongoDB), la configuración de las acciones, y cómo el servidor se actualiza automáticamente al hacer push a la rama `main`.
+
+## Paso 1: Crear una Web App en Azure
+
+### Crear un Servicio de App en Azure
+
+1. Accede al [Portal de Azure](https://portal.azure.com/).
+2. Navega a `Crear un recurso` > `App Services` > `Agregar`.
+3. Rellena los detalles necesarios:
+   - **Nombre de la aplicación**: Elige un nombre único para tu aplicación.
+   - **Sistema operativo**: Linux.
+   - **Plan de tarifa**: Selecciona un plan de tarifa adecuado para tus necesidades.
+
+4. Haz clic en `Revisar + crear` y luego en `Crear`.
+
+Una vez creada la Web App, asegúrate de anotar la URL de la aplicación.
+
+## Paso 2: Crear una Base de Datos Cosmos DB (MongoDB) en Azure
+
+### Crear un Cosmos DB con API de MongoDB
+
+1. En el [Portal de Azure](https://portal.azure.com/), navega a `Crear un recurso` > `Bases de datos` > `Azure Cosmos DB`.
+2. Selecciona `Crear`.
+3. Rellena los detalles del recurso:
+   - **API**: Core (SQL).
+   - **Nombre de la cuenta**: Elige un nombre único para tu base de datos.
+   - **Grupo de recursos**: Selecciona o crea un nuevo grupo de recursos.
+   - **Ubicación**: Selecciona la ubicación más cercana a ti.
+
+4. Haz clic en `Revisar + crear` y luego en `Crear`.
+
+### Obtener la Cadena de Conexión
+
+Una vez creada la base de datos, ve a la página del recurso y selecciona `Cadenas de conexión`. Copia la cadena de conexión para utilizarla más adelante en las variables de entorno.
+
+## Paso 3: Configurar Variables de Entorno
+
+### Crear un Archivo `.env`
+
+Crea un archivo `.env` en la raíz de tu proyecto y añade las siguientes variables de entorno:
+
+```ini
+# MONGO DB
+MONGO_CONNECTION_STRING=<your-mongodb-connection-string>
+
+# COGNITIVE SERVICES
+OPENAI_API_KEY=<your-openai-api-key>
+
+# MESSAGING
+TWILIO_ACCOUNT_SID=<your-twilio-account-sid>
+TWILIO_AUTH_TOKEN=<your-twilio-auth-token>
+
+# SERVICE DESK
+JIRA_SERVER=https://<your-jira-server>/
+JIRA_API_KEY=<your-jira-api-key>
+JIRA_PROJECT=<your-jira-project>
+JIRA_USER=<your-jira-user-email>
+JIRA_DELEGATION_USER=<your-jira-delegation-user-email>
+JIRA_DONE_STATUS_CODE=<your-jira-done-status-code>
+```
+
+Asegúrate de reemplazar los marcadores de posición con tus valores reales.
+
+## Paso 4: Configurar GitHub Actions para Despliegue Continuo
+
+### Configurar el Workflow de GitHub Actions
+
+Ya se encuentra configurado el flujo de despliegue utilizando GitHub Actions. Asegúrate de tener accesos y permisos adecuados para el repositorio.
+
+### Archivo de Configuración de GitHub Actions
+
+En tu repositorio, debes tener un archivo de configuración de GitHub Actions en `.github/workflows/deploy.yml`. Este archivo debería verse algo similar a esto:
+
+```yaml
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Deploy to Azure Web App
+      uses: Azure/webapps-deploy@v2
+      with:
+        app-name: <your-azure-webapp-name>
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: .
+```
+
+### Configuración de Secretos en GitHub
+
+Asegúrate de configurar los secretos necesarios en tu repositorio de GitHub (`Settings` > `Secrets` > `New repository secret`), incluyendo `AZURE_WEBAPP_PUBLISH_PROFILE`, que puedes descargar desde la página de tu Web App en Azure.
+
+## Paso 5: Despliegue Automático
+
+Cada vez que hagas un push a la rama `main`, el workflow de GitHub Actions se activará y desplegará automáticamente tu aplicación en la Web App de Azure.
+
+### Verificar el Estado de Despliegue
+
+Puedes verificar el estado de tu despliegue en la sección de `Actions` de tu repositorio en GitHub. Asegúrate de que todas las etapas se completen sin errores.
+
+## Resumen
+
+En esta guía, has aprendido cómo desplegar el sistema de Ecosistemas en Azure, configurar una Web App, crear una base de datos Cosmos DB, configurar las variables de entorno, y automatizar el despliegue continuo utilizando GitHub Actions. Este enfoque asegura que tu aplicación esté siempre actualizada y funcional.
+
+---
+
+**Conclusiones**
+
+Con esta configuración, tu servidor se actualizará automáticamente cada vez que hagas push a la rama `main`, asegurando un despliegue continuo y sin interrupciones. Asegúrate de revisar los logs y el estado de tu aplicación regularmente para mantener el funcionamiento óptimo.

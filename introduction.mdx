@@ -61,6 +61,29 @@ El sistema está particularmente optimizado para procesos de soporte técnico. E
 
 Las mayores ventajas del sistema provienen de la configuración precisa y personalizada de los prompts que definen las reglas y el flujo del proceso de negocio. Se pueden ajustar según las necesidades específicas del soporte técnico, asegurando que el agente AI pueda manejar una variedad de escenarios de asistencia técnica sin intervención manual.
 
+## Diagrama de Flujo
+
+A continuación se muestra un diagrama que ilustra cómo los diferentes flujos de entrada se procesan a través del sistema:
+
+```mermaid
+graph TD
+  subgraph Ingreso de Eventos
+    A(Mensaje de Usuario) -->|Canal Twilio| B(Evento)
+    C(Nuevo Ticket) -->|Canal Jira| B(Evento)
+    D(Nuevo Comentario) -->|Canal Jira| B(Evento)
+  end
+
+  subgraph Procesamiento del Evento
+    B --> E{Contexto + Proceso + AI}
+    E -->|Evaluación| F{Decisión}
+  end
+
+  subgraph Decisión
+    F --> G[Mensaje al Usuario]
+    F --> H[Acción]
+  end
+```
+
 ## Flujo de Trabajo del Sistema
 
 1. **Recepción de Eventos vía Webhook**:

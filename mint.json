@@ -21,10 +21,6 @@
       "url": "mailto:support@ecosistemas.com"
     }
   ],
-  "topbarCtaButton": {
-    "name": "Whatsapp",
-    "url": "whatsapp_to"
-  },
   "navigation": [
     {
       "group": "Get Started",
@@ -32,17 +28,6 @@
         "introduccion",
         "deploy"
       ]
-    },
-    {
-      "group": "Core Concepts",
-      "pages": [
-        "agents",
-        "prompts",
-        "llms"
-      ]
     }
-  ],
-  "footerSocials": {
-    "github": "https://github.com/ecosistemas"
-  }
+  ]
 }

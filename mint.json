@@ -25,12 +25,6 @@
     "name": "Whatsapp",
     "url": "whatsapp_to"
   },
-  "tabs": [
-    {
-      "name": "Documentation",
-      "url": "/docs"
-    }
-  ],
   "navigation": [
     {
       "group": "Get Started",

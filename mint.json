@@ -25,8 +25,7 @@
     {
       "group": "Get Started",
       "pages": [
-        "introduccion",
-        "deploy"
+        "introduccion"
       ]
     }
   ]
